@@ -11,21 +11,56 @@
 @interface ViewController (){
     AVCaptureSession* _session;
     NSString* _sessionPreset;
+    
+    EAGLContext *_context;
+    
+    CGFloat _screenWidth;
+    CGFloat _screenHeight;
+    
+    unsigned int _meshFactor;
 }
 - (void)setupAVCapture;
+- (void)setupGL;
 
 @end
 
 @implementation ViewController
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    if(!_context){
+        NSLog(@"Failed to create context");
+    }
     
+    GLKView *view = (GLKView *)self.view;
+    view.context = _context;
+    self.preferredFramesPerSecond = 60;
+    
+    _screenWidth = [UIScreen mainScreen].bounds.size.width;
+    _screenHeight = [UIScreen mainScreen].bounds.size.height;
+    view.contentScaleFactor = [UIScreen mainScreen].scale;
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad){
+        _meshFactor = 8;
+        _sessionPreset = AVCaptureSessionPreset1280x720;
+    }else{
+        _meshFactor = 4;
+        _sessionPreset = AVCaptureSessionPreset640x480;
+    }
+    
+    [self setupAVCapture];
 }
 
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark- Set OpenGL
+-(void)setupGL{
+    [EAGLContext setCurrentContext:_context];
+    
 }
 
 #pragma mark- Object init
