@@ -114,4 +114,13 @@
     
 }
 
+#pragma mark- GLKView and GLKViewController delegate methods
+- (void)update{
+    
+}
+
+- (void)glkview:(GLKView *)view drawInRect:(CGRect*)rect{
+    
+}
+
 @end
